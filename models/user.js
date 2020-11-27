@@ -31,7 +31,7 @@ const usersSchema = new mongoose.Schema({
 
 usersSchema.methods.generateAuthToken = function () {
   const token = jwt.sign(
-    { _id: this._id, name: this.name },
+    { _id: this._id, name: this.name, expiresIn: 300 },
     config.get("jwtPrivateKey")
   );
   return token;
@@ -41,7 +41,7 @@ const User = mongoose.model("Users", usersSchema);
 function validateUser(user) {
   const schema = {
     name: Joi.string().min(5).max(50).trim().required(),
-   userid: Joi.string().min(5).max(50).required().email(),
+   userid: Joi.string().min(5).max(50).required(),
     password: Joi.string().min(5).max(350).required(),
  
 

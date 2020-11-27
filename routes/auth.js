@@ -4,17 +4,17 @@ const Joi = require("joi");
 const _ = require("lodash");
 const bcrypt = require("bcrypt");
 
-// const router = express.Router();
+
 const { User } = require("../models/user");
-// const validate = require("../models/users");
+
 
 // posting users
 app.post("/", async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  let user = await User.findOne({ email: req.body.email });
-  if (!user) return res.status(400).send("Invalid email or password");
+  let user = await User.findOne({ userid: req.body.userid });
+  if (!user) return res.status(400).send("Invalid User Id or password");
 
   //Hash the password
   const ispasswordValid = await bcrypt.compare(
@@ -28,12 +28,12 @@ app.post("/", async (req, res) => {
   const token = user.generateAuthToken();
   // res.send(token);
   // res.send(true);
-  res.header("x-auth-token", token).send(_.pick(user, ["name", "email"]));
+  res.header("x-auth-token", token).send(_.pick(user, ["name"]));
 });
 
 function validate(req) {
   const schema = {
-    email: Joi.string().min(5).max(50).required(),
+    userid: Joi.string().required(),
     password: Joi.string().min(5).max(350).required(),
   };
   return Joi.validate(req, schema);

@@ -8,14 +8,12 @@ const tokenSchema = new mongoose.Schema({
  token: {
     type: String,
     minlength: 5,
-    maxlength: 50,
-    // required: true,
-    unique: true,
+    maxlength: 950,
     trim: true,
   },
  expire_time: {
      type: Date,
-    default:new Date().setMinutes(new Date().getMinutes()+5)
+    // default:new Date().setMinutes(new Date().getMinutes()+5)
 
   
   },
@@ -23,18 +21,27 @@ const tokenSchema = new mongoose.Schema({
 });
 
 
+tokenSchema.methods.generateAuthToken = function () {
+  const token = jwt.sign(
+    { _id: this._id, token: this.token },
+    config.get("jwtPrivateKey")
+  );
+  return token;
+};
+
+
+
+
+
 
 const Token = mongoose.model("Tokens", tokenSchema);
-function validateUser(token) {
-  const schema = {
-    token: Joi.string().min(5).max(250).required(),
-    expire_time: Joi.string().min(5).max(350).required(),
- 
-
-
-  };
-  return Joi.validate(token, schema);
-}
+// function validateUser(token) {
+//   const schema = {
+//     token: Joi.string().min(5).max(250).required(),
+  
+//   };
+//   return Joi.validate(token, schema);
+// }
 
 module.exports.Token = Token;
-module.exports.validate = validateUser;
+// module.exports.validate = validateUser;

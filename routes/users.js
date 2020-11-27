@@ -20,10 +20,11 @@ app.post("/", async (req, res) => {
   const salt = await bcrypt.genSalt(config.get("salt_to_password"));
   user.password = await bcrypt.hash(req.body.password, salt);
   await user.save();
-  // res.send(user);
+  res.send(user);
 
-  const token = user.generateAuthToken();
-  res.header("x-auth-token", token).send(_.pick(user, ["name", "userid"]));
+  // const token = user.generateAuthToken();
+  // res.header("x-auth-token", token).send(_.pick(user, ["name", "userid"]));
+
 });
 
 module.exports = app;
